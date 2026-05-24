@@ -1,26 +1,205 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-bg: #070709;
+  --color-bg-elevated: #0d0e12;
+  --color-bg-raised: #11131a;
+  --color-fg: #eff1f6;
+  --color-fg-muted: #a3a8b8;
+  --color-fg-subtle: #6a7080;
+  --color-border: rgba(255, 255, 255, 0.10);
+  --color-border-strong: rgba(255, 255, 255, 0.17);
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-accent-cyan: #5b8def;
+  --color-accent-violet: #b47cff;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+
+  --breakpoint-3xl: 1920px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring-soft: cubic-bezier(0.2, 0.9, 0.25, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    background-color: var(--color-bg);
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(60rem 60rem at 12% -10%, rgba(91, 141, 239, 0.14), transparent 60%),
+      radial-gradient(50rem 50rem at 95% 8%, rgba(180, 124, 255, 0.13), transparent 60%),
+      radial-gradient(70rem 70rem at 50% 110%, rgba(91, 141, 239, 0.08), transparent 60%);
+    pointer-events: none;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  ::selection {
+    background-color: rgba(180, 124, 255, 0.32);
+    color: var(--color-fg);
+  }
+
+  :focus-visible {
+    outline: none;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    box-shadow:
+      0 0 0 2px var(--color-bg),
+      0 0 0 4px rgba(180, 124, 255, 0.65);
+    border-radius: var(--radius-xs);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(
+      120deg,
+      var(--color-accent-cyan) 0%,
+      var(--color-accent-violet) 60%,
+      #f0c0ff 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .surface-glass {
+    background-color: rgba(255, 255, 255, 0.045);
+    border: 1px solid var(--color-border);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+  }
+
+  .surface-glass-strong {
+    background-color: rgba(255, 255, 255, 0.065);
+    border: 1px solid var(--color-border-strong);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+  }
+
+  .hairline {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.22),
+      transparent
+    );
+    height: 1px;
+  }
+
+  /* A faint horizontal divider rendered just above a <Section>. */
+  .section-divider {
+    position: relative;
+  }
+  .section-divider::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(60rem, 90%);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.12) 35%,
+      rgba(180, 124, 255, 0.22) 50%,
+      rgba(255, 255, 255, 0.12) 65%,
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  /* AI card sweep — a slow gradient line traversing the top edge. */
+  @keyframes ai-sweep {
+    0%   { transform: translateX(-100%); opacity: 0; }
+    25%  { opacity: 1; }
+    75%  { opacity: 1; }
+    100% { transform: translateX(120%); opacity: 0; }
+  }
+  .ai-sweep {
+    animation: ai-sweep 7s var(--ease-spring-soft) infinite;
+  }
+
+  /* Pointer-driven halo on cards — uses --hx/--hy CSS vars set in JS. */
+  .hover-halo {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 500ms var(--ease-out-expo);
+    background: radial-gradient(
+      28rem 28rem at var(--hx, 50%) var(--hy, 50%),
+      rgba(180, 124, 255, 0.18),
+      rgba(91, 141, 239, 0.08) 35%,
+      transparent 65%
+    );
+  }
+  .group:hover .hover-halo,
+  [data-hover="true"] .hover-halo {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .ai-sweep {
+    animation: none !important;
+    opacity: 0;
+  }
 }
