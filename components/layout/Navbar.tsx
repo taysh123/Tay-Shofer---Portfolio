@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { siteMeta } from "@/data/socials";
 import { MenuIcon, CloseIcon } from "@/components/ui/icons";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const links = [
   { href: "#about", label: "About" },
@@ -86,7 +87,26 @@ export function Navbar() {
             ))}
           </ul>
 
-          <div className="hidden md:flex">
+          <div className="hidden items-center gap-2 md:flex">
+            {/* Cmd+K hint */}
+            <button
+              type="button"
+              aria-label="Open command palette (Ctrl+K)"
+              onClick={() => {
+                const ev = new KeyboardEvent("keydown", {
+                  key: "k",
+                  ctrlKey: true,
+                  bubbles: true,
+                });
+                window.dispatchEvent(ev);
+              }}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1.5 font-mono text-[0.65rem] text-fg-subtle transition-colors hover:border-white/20 hover:text-fg-muted"
+            >
+              <span>⌘K</span>
+            </button>
+
+            <ThemeToggle />
+
             <a
               href="#contact"
               className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-fg transition-colors hover:border-white/20 hover:bg-white/[0.07]"
@@ -99,16 +119,19 @@ export function Navbar() {
             </a>
           </div>
 
-          <button
-            type="button"
-            aria-label="Open menu"
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            onClick={() => setOpen(true)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-fg md:hidden"
-          >
-            <MenuIcon size={20} />
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
+            <button
+              type="button"
+              aria-label="Open menu"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              onClick={() => setOpen(true)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-fg"
+            >
+              <MenuIcon size={20} />
+            </button>
+          </div>
         </nav>
       </header>
 

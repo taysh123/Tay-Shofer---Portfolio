@@ -1,4 +1,36 @@
+"use client";
+
+import { useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { siteMeta, socials } from "@/data/socials";
+
+function BuiltBy() {
+  const prefersReduced = useReducedMotion();
+  const lineRef = useRef<HTMLSpanElement>(null);
+
+  return (
+    <p className="mt-5 inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-subtle">
+      <span
+        aria-hidden="true"
+        className="inline-block h-1 w-1 rounded-full bg-gradient-to-br from-[#5b8def] to-[#b47cff]"
+      />
+      By the way —{" "}
+      <span className="group relative inline-flex cursor-default items-center">
+        <span className="text-gradient">I built this website.</span>
+        {!prefersReduced && (
+          <motion.span
+            ref={lineRef}
+            aria-hidden="true"
+            className="absolute -bottom-px left-0 h-px w-full origin-left bg-gradient-to-r from-[#5b8def] to-[#b47cff]"
+            initial={{ scaleX: 0 }}
+            whileHover={{ scaleX: 1 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          />
+        )}
+      </span>
+    </p>
+  );
+}
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -28,13 +60,7 @@ export function Footer() {
             Built from scratch with Next.js, React, Tailwind, and Framer Motion.
             Designed, written, and shipped by Tay.
           </p>
-          <p className="mt-5 inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-subtle">
-            <span
-              aria-hidden="true"
-              className="inline-block h-1 w-1 rounded-full bg-gradient-to-br from-[#5b8def] to-[#b47cff]"
-            />
-            By the way — <span className="text-gradient">I built this website.</span>
-          </p>
+          <BuiltBy />
         </div>
         <div className="flex flex-col gap-2 text-sm text-fg-muted sm:items-end">
           <p className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-subtle">

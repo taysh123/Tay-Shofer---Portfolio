@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Section } from "@/components/ui/Section";
 import { Reveal, RevealItem } from "@/components/ui/Reveal";
 import { Tag } from "@/components/ui/Tag";
 import { Magnetic } from "@/components/ui/Magnetic";
-import { ArrowUpRightIcon, GithubIcon } from "@/components/ui/icons";
+import { CaseStudyPanel } from "@/components/ui/CaseStudyPanel";
+import { ArrowUpRightIcon, GithubIcon, BookOpenIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 import { projects, type Project } from "@/data/projects";
 
@@ -16,37 +17,55 @@ const accentMap: Record<Project["accent"], string> = {
 };
 
 export function Projects() {
+  const [caseStudyProject, setCaseStudyProject] = useState<Project | null>(null);
+
   const sorted = [...projects].sort(
     (a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)),
   );
 
   return (
-    <Section
-      id="projects"
-      eyebrow="03 — Selected work"
-      title={<>Projects I'm proud of</>}
-      intro="A small set of focused builds. Each one is end-to-end — designed, written, and shipped from scratch."
-    >
-      <Reveal
-        as="ul"
-        stagger={0.12}
-        className="grid grid-cols-1 gap-5 sm:gap-6 lg:grid-cols-2"
+    <>
+      <Section
+        id="projects"
+        eyebrow="03 — Selected work"
+        title={<>Projects I'm proud of</>}
+        intro="A small set of focused builds. Each one is end-to-end — designed, written, and shipped from scratch."
       >
-        {sorted.map((p) => (
-          <RevealItem
-            key={p.id}
-            as="li"
-            className={cn(p.featured && "lg:col-span-2")}
-          >
-            <ProjectCard project={p} />
-          </RevealItem>
-        ))}
-      </Reveal>
-    </Section>
+        <Reveal
+          as="ul"
+          stagger={0.12}
+          className="grid grid-cols-1 gap-5 sm:gap-6 lg:grid-cols-2"
+        >
+          {sorted.map((p) => (
+            <RevealItem
+              key={p.id}
+              as="li"
+              className={cn(p.featured && "lg:col-span-2")}
+            >
+              <ProjectCard
+                project={p}
+                onViewCaseStudy={() => setCaseStudyProject(p)}
+              />
+            </RevealItem>
+          ))}
+        </Reveal>
+      </Section>
+
+      <CaseStudyPanel
+        project={caseStudyProject}
+        onClose={() => setCaseStudyProject(null)}
+      />
+    </>
   );
 }
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({
+  project,
+  onViewCaseStudy,
+}: {
+  project: Project;
+  onViewCaseStudy: () => void;
+}) {
   const ref = useRef<HTMLElement>(null);
   const featured = !!project.featured;
 
@@ -150,16 +169,28 @@ function ProjectCard({ project }: { project: Project }) {
             View on GitHub
             <ArrowUpRightIcon size={14} />
           </a>
-          {project.demoUrl && (
+
+          {project.liveUrl && (
             <a
-              href={project.demoUrl}
+              href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-fg px-4 py-2 text-sm font-medium text-bg"
+              className="inline-flex items-center gap-2 rounded-full bg-fg px-4 py-2 text-sm font-medium text-bg transition-opacity hover:opacity-80"
             >
-              Live demo
+              Open App
               <ArrowUpRightIcon size={14} />
             </a>
+          )}
+
+          {project.caseStudy && (
+            <button
+              type="button"
+              onClick={onViewCaseStudy}
+              className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.035] px-4 py-2 text-sm text-fg-muted transition-colors hover:border-[#b47cff]/30 hover:bg-[#b47cff]/[0.06] hover:text-fg"
+            >
+              <BookOpenIcon size={14} />
+              Case Study
+            </button>
           )}
         </footer>
       </article>

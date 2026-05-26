@@ -189,6 +189,125 @@
   }
 }
 
+/* ─── Light Mode ──────────────────────────────────────────────── */
+/*
+  Tailwind v4 defines @theme variables on * (every element), so overriding
+  on html alone is beaten by the * rule on body. We must use [data-theme="light"] *
+  to win the cascade for every descendant.
+*/
+[data-theme="light"],
+[data-theme="light"] *,
+[data-theme="light"] *::before,
+[data-theme="light"] *::after {
+  --color-bg: #f4f6fb;
+  --color-bg-elevated: #edf0f7;
+  --color-bg-raised: #e4e8f2;
+  --color-fg: #0f1220;
+  --color-fg-muted: #3d4561;
+  --color-fg-subtle: #7380a0;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-strong: rgba(0, 0, 0, 0.14);
+}
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="light"] .surface-glass {
+  background-color: rgba(255, 255, 255, 0.62);
+  border-color: rgba(0, 0, 0, 0.09);
+}
+
+[data-theme="light"] .surface-glass-strong {
+  background-color: rgba(255, 255, 255, 0.78);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .hairline {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.14),
+    transparent
+  );
+}
+
+[data-theme="light"] .section-divider::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.08) 35%,
+    rgba(180, 124, 255, 0.22) 50%,
+    rgba(0, 0, 0, 0.08) 65%,
+    transparent
+  );
+}
+
+[data-theme="light"] .hover-halo {
+  background: radial-gradient(
+    28rem 28rem at var(--hx, 50%) var(--hy, 50%),
+    rgba(180, 124, 255, 0.12),
+    rgba(91, 141, 239, 0.06) 35%,
+    transparent 65%
+  );
+}
+
+/* Light mode: grid overlay is too faint — darken slightly */
+[data-theme="light"] body::after {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  opacity: 0.5;
+}
+
+/* Light mode: footer/section dividers */
+[data-theme="light"] footer {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+/* ─── Accessibility Modes ─────────────────────────────────────── */
+[data-high-contrast="true"],
+[data-high-contrast="true"] *,
+[data-high-contrast="true"] *::before,
+[data-high-contrast="true"] *::after {
+  --color-fg: #ffffff;
+  --color-fg-muted: #d0d5e8;
+  --color-fg-subtle: #9aa3bf;
+  --color-border: rgba(255, 255, 255, 0.22);
+  --color-border-strong: rgba(255, 255, 255, 0.34);
+}
+
+[data-theme="light"][data-high-contrast="true"],
+[data-theme="light"][data-high-contrast="true"] *,
+[data-theme="light"][data-high-contrast="true"] *::before,
+[data-theme="light"][data-high-contrast="true"] *::after {
+  --color-fg: #000000;
+  --color-fg-muted: #1a1f35;
+  --color-fg-subtle: #3a4060;
+  --color-border: rgba(0, 0, 0, 0.22);
+  --color-border-strong: rgba(0, 0, 0, 0.34);
+}
+
+[data-large-text="true"] {
+  font-size: 112.5%;
+}
+
+/* ─── New Keyframes ───────────────────────────────────────────── */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.15); }
+}
+
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes chat-blink {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+/* ─── Reduced Motion ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -202,4 +321,17 @@
     animation: none !important;
     opacity: 0;
   }
+}
+
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+[data-reduced-motion="true"] .ai-sweep {
+  animation: none !important;
+  opacity: 0;
 }

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { siteMeta } from "@/data/socials";
 import { JsonLd } from "@/components/seo/JsonLd";
+import Script from "next/script";
+import { Providers } from "@/components/providers/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -82,8 +84,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#070709",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#070709" },
+    { media: "(prefers-color-scheme: light)", color: "#f4f6fb" },
+  ],
+  colorScheme: "dark light",
   width: "device-width",
   initialScale: 1,
 };
@@ -94,16 +99,24 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-theme="dark"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-bg text-fg">
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}var a=localStorage.getItem('a11y');if(a){var p=JSON.parse(a);if(p.reducedMotion)document.documentElement.setAttribute('data-reduced-motion','true');if(p.highContrast)document.documentElement.setAttribute('data-high-contrast','true');if(p.largeText)document.documentElement.setAttribute('data-large-text','true');}}catch(e){}})();`,
+          }}
+        />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:inline-flex focus:items-center focus:gap-2 focus:rounded-full focus:border focus:border-white/20 focus:bg-bg-elevated focus:px-4 focus:py-2 focus:text-sm focus:text-fg"
         >
           Skip to content
         </a>
-        {children}
+        <Providers>{children}</Providers>
         <JsonLd />
       </body>
     </html>
