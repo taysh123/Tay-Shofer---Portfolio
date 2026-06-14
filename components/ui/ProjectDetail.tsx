@@ -29,8 +29,17 @@ export function ProjectDetail({
 }) {
   const reduced = useReducedMotionPref();
   const gallery = project.media?.gallery ?? [];
-  // Selected gallery shot overrides the main visual; reset when project changes.
+  // Selected gallery shot overrides the main visual.
   const [shot, setShot] = useState<string | null>(null);
+  // Reset the gallery selection whenever the active project changes, so the
+  // large visual always belongs to the current project (falls back to its
+  // cover). Render-phase reset avoids the stale-image flash a useEffect reset
+  // would cause under the AnimatePresence cross-fade below.
+  const [shotProjectId, setShotProjectId] = useState(project.id);
+  if (shotProjectId !== project.id) {
+    setShotProjectId(project.id);
+    setShot(null);
+  }
   const shotKey = `${project.id}:${shot ?? "cover"}`;
 
   const fit = project.media?.fit ?? "cover";
