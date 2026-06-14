@@ -56,9 +56,23 @@ export function ProjectImage({
   const media: ProjectMedia | undefined = project.media;
   const accent = ACCENT[project.accent];
   const alt = media?.alt ?? `${project.name} — interface screenshot`;
+  const fit = media?.fit ?? "cover";
+  const objectClass =
+    fit === "contain" ? "object-contain" : "object-cover object-top";
+  // Portrait phone shots ("contain") get an accent-tinted backdrop so the
+  // letterboxing reads as an intentional app-preview frame, not empty space.
+  const containStyle =
+    fit === "contain"
+      ? {
+          backgroundImage: `radial-gradient(120% 100% at 50% 0%, ${accent.from}, ${accent.to} 72%)`,
+        }
+      : undefined;
 
   return (
-    <div className={cn("relative overflow-hidden", className)}>
+    <div
+      className={cn("relative overflow-hidden", className)}
+      style={containStyle}
+    >
       {media?.image ? (
         media.mobileImage ? (
           <>
@@ -67,14 +81,14 @@ export function ProjectImage({
               alt={alt}
               fill
               sizes={sizes}
-              className="hidden object-cover object-top sm:block"
+              className={cn("hidden sm:block", objectClass)}
             />
             <Image
               src={media.mobileImage}
               alt={alt}
               fill
               sizes={sizes}
-              className="object-cover object-top sm:hidden"
+              className={cn("sm:hidden", objectClass)}
             />
           </>
         ) : (
@@ -83,7 +97,7 @@ export function ProjectImage({
             alt={alt}
             fill
             sizes={sizes}
-            className="object-cover object-top"
+            className={objectClass}
           />
         )
       ) : (

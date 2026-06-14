@@ -31,6 +31,23 @@ A premium, AI-native software engineer portfolio — cinematic, interactive, and
 
 ---
 
+## Featured Projects
+
+The showcase carousel presents real, shipped projects — each with its own screenshots and a full case study (architecture, challenges, decisions, learnings):
+
+| Project | What it is | Stack | Links |
+|---|---|---|---|
+| **SentinelAI** | AI-assisted Security Operations Center with a real-time detection→alerting pipeline | ASP.NET Core · Next.js · SignalR · RabbitMQ · Docker | [GitHub](https://github.com/taysh123/SentinelAI) |
+| **DeveloperOS** | Private, local-first desktop workspace that indexes and answers questions about your own code | Python · SQLite FTS5 · Ollama · PWA/CLI | [GitHub](https://github.com/taysh123/DeveloperOS) |
+| **T Poker** | Home-game poker companion across web + Android with a cross-language settlement engine | React Native (Expo) · .NET 8 · C# · PostgreSQL | [Live](https://poker-home-games-three.vercel.app/) · [GitHub](https://github.com/taysh123/poker-home-games) |
+| **GRAVITY FLOW** | One-touch physics puzzler — 150 levels, endless mode, store-ready | Phaser 3 · TypeScript · Matter.js · Capacitor | [Play](https://taysh123.github.io/Gravity-Game/) · [GitHub](https://github.com/taysh123/Gravity-Game) |
+| **Orders & Delivery** | End-to-end ordering/dispatch system modeled as a state machine | Node.js · REST · SQL · React | [GitHub](https://github.com/taysh123/orders-delivery-management-system) |
+| **Job Assistant** | Automated job-hunt pipeline delivering curated roles to Telegram | Python · SQLite · Telegram Bot API · GitHub Actions | [GitHub](https://github.com/taysh123/job-assistant) |
+
+> Project content lives in [`data/projects.ts`](data/projects.ts); screenshots in [`public/projects/`](public/projects). Projects render media when present and fall back to a branded placeholder otherwise.
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |

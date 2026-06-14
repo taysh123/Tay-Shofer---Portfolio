@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/cn";
-import { ProjectImage } from "@/components/ui/ProjectImage";
+import { ProjectImage, ACCENT } from "@/components/ui/ProjectImage";
 import { Tag } from "@/components/ui/Tag";
 import {
   ArrowUpRightIcon,
@@ -33,6 +33,17 @@ export function ProjectDetail({
   const [shot, setShot] = useState<string | null>(null);
   const shotKey = `${project.id}:${shot ?? "cover"}`;
 
+  const fit = project.media?.fit ?? "cover";
+  const objectClass =
+    fit === "contain" ? "object-contain" : "object-cover object-top";
+  const accent = ACCENT[project.accent];
+  const frameStyle =
+    fit === "contain"
+      ? {
+          backgroundImage: `radial-gradient(120% 100% at 50% 0%, ${accent.from}, ${accent.to} 72%)`,
+        }
+      : undefined;
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -45,7 +56,10 @@ export function ProjectDetail({
       >
         {/* Visual */}
         <div>
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-white/[0.10] bg-white/[0.02]">
+          <div
+            className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-white/[0.10] bg-white/[0.02]"
+            style={frameStyle}
+          >
             {shot ? (
               <Image
                 key={shotKey}
@@ -53,7 +67,7 @@ export function ProjectDetail({
                 alt={`${project.name} — detail screenshot`}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover object-top"
+                className={objectClass}
               />
             ) : (
               <ProjectImage
