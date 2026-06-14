@@ -3,6 +3,7 @@
 import { Section } from "@/components/ui/Section";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Reveal, RevealItem } from "@/components/ui/Reveal";
+import { Tilt } from "@/components/ui/Tilt";
 import {
   ZapIcon,
   SmartphoneIcon,
@@ -78,10 +79,10 @@ const accentClasses = {
 export function EngineeringPanel() {
   return (
     <Section
-      id="engineering"
-      eyebrow="06 — Engineering approach"
+      id="approach"
+      eyebrow="04 — Approach"
       title={<>Built for performance and people</>}
-      intro="The principles that shape every decision — from architecture to animation timing."
+      intro="From C and C++ foundations to shipped, polished products — the principles that shape every decision I make, from architecture to animation timing."
     >
       <Reveal
         as="ul"
@@ -92,6 +93,7 @@ export function EngineeringPanel() {
           const ac = accentClasses[p.accent];
           return (
             <RevealItem key={p.title} as="li">
+              <Tilt className="h-full">
               <GlassCard
                 interactive
                 className="group relative flex h-full flex-col gap-4 overflow-hidden p-6"
@@ -118,6 +120,7 @@ export function EngineeringPanel() {
                   </p>
                 </div>
               </GlassCard>
+              </Tilt>
             </RevealItem>
           );
         })}

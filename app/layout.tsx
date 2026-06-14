@@ -1,10 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { siteMeta } from "@/data/socials";
 import { JsonLd } from "@/components/seo/JsonLd";
-import Script from "next/script";
 import { Providers } from "@/components/providers/Providers";
+import {
+  THEME_COOKIE,
+  A11Y_COOKIE,
+  parseTheme,
+  parseA11y,
+} from "@/lib/theme";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -93,30 +99,34 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Theme + a11y prefs come from cookies so the server renders the correct
+  // data-* attributes that the client will hydrate to — no mismatch, no flash.
+  const store = await cookies();
+  const theme = parseTheme(store.get(THEME_COOKIE)?.value);
+  const a11y = parseA11y(store.get(A11Y_COOKIE)?.value);
+
   return (
     <html
       lang="en"
-      data-theme="dark"
+      data-theme={theme}
+      data-reduced-motion={String(a11y.reducedMotion)}
+      data-high-contrast={String(a11y.highContrast)}
+      data-large-text={String(a11y.largeText)}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-bg text-fg">
-        <Script
-          id="theme-init"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}var a=localStorage.getItem('a11y');if(a){var p=JSON.parse(a);if(p.reducedMotion)document.documentElement.setAttribute('data-reduced-motion','true');if(p.highContrast)document.documentElement.setAttribute('data-high-contrast','true');if(p.largeText)document.documentElement.setAttribute('data-large-text','true');}}catch(e){}})();`,
-          }}
-        />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:inline-flex focus:items-center focus:gap-2 focus:rounded-full focus:border focus:border-white/20 focus:bg-bg-elevated focus:px-4 focus:py-2 focus:text-sm focus:text-fg"
         >
           Skip to content
         </a>
-        <Providers>{children}</Providers>
+        <Providers initialTheme={theme} initialA11y={a11y}>
+          {children}
+        </Providers>
         <JsonLd />
       </body>
     </html>

@@ -8,6 +8,19 @@ export type CaseStudy = {
   aiWorkflow?: string;
 };
 
+/**
+ * Future-ready media for a project. Every field is optional with graceful
+ * fallbacks at the render layer: missing `gallery` → no strip; missing
+ * `mobileImage` → falls back to `image`; missing `image` → the accent-gradient
+ * placeholder treatment. Paths are under /public (e.g. "/projects/poker.png").
+ */
+export type ProjectMedia = {
+  image?: string;
+  mobileImage?: string;
+  alt?: string;
+  gallery?: { src: string; alt?: string }[];
+};
+
 export type Project = {
   id: string;
   name: string;
@@ -19,7 +32,7 @@ export type Project = {
   liveUrl?: string;
   featured?: boolean;
   accent: ProjectAccent;
-  year?: string;
+  media?: ProjectMedia;
   caseStudy?: CaseStudy;
 };
 
@@ -36,7 +49,6 @@ export const projects: Project[] = [
     demoUrl: "https://poker-home-games-three.vercel.app/",
     featured: true,
     accent: "violet",
-    year: "2024",
     caseStudy: {
       architecture:
         "Client-side React application with a finite state machine at its core — each poker session moves through defined states (setup → active → settling → closed). Player buy-ins and chip counts are modeled as immutable records, with all balance calculations derived from a single source of truth. State is persisted to localStorage so sessions survive page refreshes.",
@@ -71,7 +83,6 @@ export const projects: Project[] = [
     stack: ["Full-Stack", "Node.js", "REST API", "SQL", "React"],
     repoUrl: "https://github.com/taysh123/orders-delivery-management-system",
     accent: "cyan",
-    year: "2024",
     caseStudy: {
       architecture:
         "Full-stack application with a REST API backend and React frontend. Orders move through a lifecycle modeled as a finite state machine (pending → confirmed → dispatched → delivered → closed). The database schema is fully normalized with foreign key constraints enforcing referential integrity. API endpoints are resource-oriented with consistent error shapes.",

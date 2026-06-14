@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+} from "framer-motion";
 import { cn } from "@/lib/cn";
 import { siteMeta } from "@/data/socials";
 import { MenuIcon, CloseIcon } from "@/components/ui/icons";
@@ -11,7 +17,7 @@ const links = [
   { href: "#about", label: "About" },
   { href: "#skills", label: "Skills" },
   { href: "#projects", label: "Projects" },
-  { href: "#timeline", label: "Approach" },
+  { href: "#approach", label: "Approach" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -19,6 +25,12 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const prefersReduced = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 30,
+    mass: 0.3,
+  });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -133,6 +145,16 @@ export function Navbar() {
             </button>
           </div>
         </nav>
+
+        {/* Scroll progress line */}
+        <motion.span
+          aria-hidden="true"
+          style={{ scaleX: progress }}
+          className={cn(
+            "absolute bottom-0 left-0 h-px w-full origin-left bg-gradient-to-r from-[#5b8def] to-[#b47cff] transition-opacity duration-500",
+            scrolled ? "opacity-100" : "opacity-0",
+          )}
+        />
       </header>
 
       <AnimatePresence>

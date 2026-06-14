@@ -14,6 +14,9 @@ A premium, AI-native software engineer portfolio — cinematic, interactive, and
 
 ## Features
 
+- **3D Project Carousel** — CSS-3D rotating showcase with drag/touch spin, auto-advance, and a rich detail panel, paired so the carousel and detail stay in sync
+- **Scroll-Reactive Hero Lattice** — An engineering/systems node-graph (CSS `preserve-3d`) that slowly rotates and parallaxes on scroll
+- **Subtle 3D Card Tilt** — Pointer-driven tilt on skill/approach cards, sharing the 3D language site-wide
 - **Dark/Light Mode** — Elegant theme switcher with smooth transitions and localStorage persistence
 - **Command Palette** — `Ctrl+K` / `Cmd+K` to navigate, toggle theme, open links, and more
 - **Accessibility Panel** — Floating a11y button with reduced motion, high contrast, and large text toggles
@@ -21,7 +24,7 @@ A premium, AI-native software engineer portfolio — cinematic, interactive, and
 - **Project Case Studies** — Slide-over panels with architecture, challenges, decisions, and learnings
 - **Interactive Background** — Mouse-reactive glow + scroll-driven ambient orbs
 - **Cinematic Motion System** — Framer Motion 12 with spring-physics, viewport triggers, and stagger
-- **Engineering Panel** — Showcase of engineering principles and workflow
+- **Approach Section** — Showcase of engineering principles and workflow
 - **Fully Responsive** — Mobile-first from 375px to 1920px+
 - **WCAG AA Accessible** — Focus management, skip links, ARIA labels, screen reader support
 - **Production-Ready SEO** — OG images, JSON-LD schema, sitemap, robots.txt
@@ -52,24 +55,25 @@ app/
 
 components/
   providers/          # React Context providers (Theme, Accessibility)
-  layout/             # Navbar, Footer
-  sections/           # Hero, About, Skills, Projects, Timeline, EngineeringPanel, Contact
-  effects/            # AmbientGlow (mouse-reactive + scroll-driven orbs), BootSequence
-  ui/                 # Design system: GlassCard, Reveal, Section, Tag, Magnetic,
+  layout/             # Navbar (with scroll-progress line), Footer
+  sections/           # Hero, About, Skills, Projects, EngineeringPanel (Approach), Contact
+  effects/            # AmbientGlow, HeroArtifact (3D systems lattice), BootSequence
+  ui/                 # Design system: GlassCard, Reveal, Section, Tag, Magnetic, Tilt,
+                      #   ProjectCarousel, ProjectDetail, ProjectImage,
                       #   ThemeToggle, CommandPalette, AccessibilityPanel,
                       #   CaseStudyPanel, AIChatWidget, icons
   seo/                # JsonLd schema markup
 
 data/
-  projects.ts         # Project definitions + full case study content
+  projects.ts         # Project definitions + media + full case study content
   skills.ts           # Skill groups
-  timeline.ts         # Approach / experience entries
   socials.ts          # Contact info, site metadata
 
 lib/
-  motion.ts           # Framer Motion easing curves + variant presets
-  cn.ts               # className combiner
-  obfuscate.ts        # Base64 phone encoding
+  motion.ts                # Framer Motion easing curves + variant presets
+  useReducedMotionPref.ts  # Combined OS + a11y-panel reduced-motion signal (gates JS 3D)
+  cn.ts                    # className combiner
+  obfuscate.ts             # Base64 phone encoding
 ```
 
 ### Design System
@@ -94,7 +98,7 @@ localStorage('theme') → data-theme on <html> → CSS variable overrides
 ## Performance & Accessibility
 
 - **Transform-only animations** — compositor-promoted, zero layout thrashing
-- **`prefers-reduced-motion` respected everywhere** — OS setting + user toggle in a11y panel
+- **`prefers-reduced-motion` respected everywhere** — OS setting + in-app a11y toggle, combined via `useReducedMotionPref` so even JS-driven 3D (carousel, hero lattice, tilt) fully disables and falls back to static layouts
 - **Lazy-loaded** non-critical components
 - **No external icon libraries** — custom SVG icons with consistent stroke weight
 - **WCAG AA contrast** in both dark and light themes
@@ -117,7 +121,7 @@ All animations are defined in `lib/motion.ts` as reusable Framer Motion variants
 | `lineGrow` | Hairline/eyebrow decorators |
 | `staggerContainer` | Wraps list animations with configurable delay |
 
-The ambient background uses `useScroll` for parallax orbs and `requestAnimationFrame` for mouse-reactive glow — both gated behind `useReducedMotion()`.
+The ambient background uses `useScroll` for parallax orbs and `requestAnimationFrame` for mouse-reactive glow. The 3D layer (project carousel, hero systems lattice, card tilt) is built with pure CSS 3D transforms (`perspective` / `preserve-3d`) driven by Framer motion values — **no Three.js, zero added dependencies** — and is gated behind `useReducedMotionPref` (the OS media query *or* the in-app a11y toggle), since the CSS reduced-motion kill-switch cannot stop a JS-driven transform loop.
 
 ---
 

@@ -21,7 +21,7 @@ export function Contact() {
       eyebrow="05 — Contact"
       title={
         <>
-          Let's build something
+          Let&apos;s build something
           <br className="hidden sm:block" />{" "}
           <span className="text-gradient">worth shipping.</span>
         </>

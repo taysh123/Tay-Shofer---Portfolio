@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import { siteMeta } from "@/data/socials";
 import { GlowOrb } from "@/components/ui/GlowOrb";
+import { HeroArtifact } from "@/components/effects/HeroArtifact";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { ArrowDownIcon, ArrowUpRightIcon } from "@/components/ui/icons";
 import { easeOutExpo, easeSpringSoft } from "@/lib/motion";
@@ -123,6 +124,9 @@ export function Hero() {
           />
         </motion.div>
       </motion.div>
+
+      {/* Engineering/systems lattice — scroll-reactive 3D centerpiece */}
+      <HeroArtifact progress={scrollYProgress} />
 
       <motion.div
         style={{

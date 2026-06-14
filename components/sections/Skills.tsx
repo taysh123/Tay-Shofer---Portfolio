@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { Section } from "@/components/ui/Section";
 import { Reveal, RevealItem } from "@/components/ui/Reveal";
 import { Tag } from "@/components/ui/Tag";
+import { Tilt } from "@/components/ui/Tilt";
 import { SparkIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 import { skillGroups, type SkillGroup } from "@/data/skills";
@@ -34,7 +35,9 @@ export function Skills() {
             as="li"
             className={cn(i === 0 ? "xl:col-span-2" : "")}
           >
-            <SkillCard group={group} index={i} featured={group.id === "ai"} />
+            <Tilt className="h-full">
+              <SkillCard group={group} index={i} featured={group.id === "ai"} />
+            </Tilt>
           </RevealItem>
         ))}
       </Reveal>

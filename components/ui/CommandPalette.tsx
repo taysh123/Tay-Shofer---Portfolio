@@ -75,10 +75,10 @@ export function CommandPalette() {
       action: () => { close(); scrollTo("projects"); },
     },
     {
-      id: "nav-timeline",
+      id: "nav-approach",
       label: "Go to Approach",
       category: "Navigate",
-      action: () => { close(); scrollTo("timeline"); },
+      action: () => { close(); scrollTo("approach"); },
     },
     {
       id: "nav-contact",
@@ -139,9 +139,13 @@ export function CommandPalette() {
   // Group by category
   const categories = Array.from(new Set(filtered.map((c) => c.category)));
 
-  useEffect(() => {
+  // Reset the highlighted row whenever the query changes — adjusted during
+  // render (React's recommended pattern) rather than in an effect.
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (query !== prevQuery) {
+    setPrevQuery(query);
     setActiveIdx(0);
-  }, [query]);
+  }
 
   useEffect(() => {
     if (open) {

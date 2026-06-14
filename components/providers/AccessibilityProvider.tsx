@@ -1,12 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
-
-type A11yPrefs = {
-  reducedMotion: boolean;
-  highContrast: boolean;
-  largeText: boolean;
-};
+import { createContext, useContext, useState } from "react";
+import {
+  A11Y_COOKIE,
+  A11Y_ATTR,
+  writeCookie,
+  type A11yPrefs,
+} from "@/lib/theme";
 
 type A11yContextValue = A11yPrefs & {
   toggle: (key: keyof A11yPrefs) => void;
@@ -25,40 +25,20 @@ export function useAccessibility() {
 
 export function AccessibilityProvider({
   children,
+  initialPrefs,
 }: {
   children: React.ReactNode;
+  initialPrefs: A11yPrefs;
 }) {
-  const [prefs, setPrefs] = useState<A11yPrefs>({
-    reducedMotion: false,
-    highContrast: false,
-    largeText: false,
-  });
-
-  useEffect(() => {
-    const stored: Partial<A11yPrefs> = {};
-    try {
-      const raw = localStorage.getItem("a11y");
-      if (raw) Object.assign(stored, JSON.parse(raw));
-    } catch {}
-    const next = { ...prefs, ...stored };
-    setPrefs(next);
-    sync(next);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function sync(p: A11yPrefs) {
-    const el = document.documentElement;
-    el.setAttribute("data-reduced-motion", String(p.reducedMotion));
-    el.setAttribute("data-high-contrast", String(p.highContrast));
-    el.setAttribute("data-large-text", String(p.largeText));
-  }
+  // Server rendered the matching data-* attributes from the same cookie value,
+  // so initial state matches the DOM — no mount effect needed.
+  const [prefs, setPrefs] = useState<A11yPrefs>(initialPrefs);
 
   const toggle = (key: keyof A11yPrefs) => {
     setPrefs((prev) => {
       const next = { ...prev, [key]: !prev[key] };
-      sync(next);
-      try {
-        localStorage.setItem("a11y", JSON.stringify(next));
-      } catch {}
+      document.documentElement.setAttribute(A11Y_ATTR[key], String(next[key]));
+      writeCookie(A11Y_COOKIE, JSON.stringify(next));
       return next;
     });
   };

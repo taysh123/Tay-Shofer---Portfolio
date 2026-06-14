@@ -8,10 +8,9 @@ export function BootSequence() {
   const prefersReduced = useReducedMotion();
 
   useEffect(() => {
-    if (prefersReduced) {
-      setDone(true);
-      return;
-    }
+    // When reduced motion is on the component renders null, so `done` is moot —
+    // just skip the timer (no synchronous setState in the effect body).
+    if (prefersReduced) return;
     const t = window.setTimeout(() => setDone(true), 700);
     return () => window.clearTimeout(t);
   }, [prefersReduced]);

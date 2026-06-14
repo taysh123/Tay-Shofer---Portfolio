@@ -264,6 +264,91 @@
   border-top-color: rgba(0, 0, 0, 0.08);
 }
 
+/* ─── Card Elevation + Carousel Stage (theme-paired) ──────────── */
+/*
+  Dark mode fakes depth with borders; light mode needs real elevation or
+  cards vanish on the near-white background. These tokens give each theme its
+  own surface + shadow so the 3D showcase reads premium in BOTH modes.
+*/
+:root {
+  /* slightly raised (was 0.05) so the card reads without backdrop-blur */
+  --surface-card: rgba(255, 255, 255, 0.07);
+  --surface-card-border: var(--color-border);
+  --surface-card-border-active: var(--color-border-strong);
+  --shadow-card:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 40px -20px rgba(0, 0, 0, 0.7);
+  --shadow-card-active:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 30px 70px -22px rgba(0, 0, 0, 0.8);
+  /* stage spotlight + contact shadow */
+  --stage-floor: radial-gradient(
+    58% 60% at 50% 50%,
+    rgba(120, 140, 255, 0.16),
+    rgba(120, 140, 255, 0) 70%
+  );
+  --stage-contact: rgba(0, 0, 0, 0.38);
+  --ph-line: rgba(255, 255, 255, 0.05);
+  --ph-vignette: rgba(0, 0, 0, 0.22);
+}
+
+[data-theme="light"] {
+  --surface-card: rgba(255, 255, 255, 0.92);
+  --surface-card-border: rgba(15, 18, 32, 0.10);
+  --surface-card-border-active: rgba(15, 18, 32, 0.17);
+  --shadow-card:
+    0 1px 2px rgba(16, 24, 40, 0.05),
+    0 8px 16px -6px rgba(16, 24, 40, 0.10),
+    0 24px 48px -16px rgba(16, 24, 40, 0.16);
+  --shadow-card-active:
+    0 1px 2px rgba(16, 24, 40, 0.06),
+    0 14px 26px -8px rgba(16, 24, 40, 0.14),
+    0 38px 66px -22px rgba(16, 24, 40, 0.22);
+  --stage-floor: radial-gradient(
+    58% 60% at 50% 50%,
+    rgba(91, 120, 220, 0.14),
+    rgba(91, 120, 220, 0) 70%
+  );
+  --stage-contact: rgba(16, 24, 40, 0.16);
+  --ph-line: rgba(15, 18, 32, 0.06);
+  --ph-vignette: rgba(16, 24, 40, 0.10);
+}
+
+/* Grounds the carousel: a soft spotlight floor + a contact shadow under the
+   always-centered front card. Static (reduced-motion safe). */
+.carousel-stage {
+  position: relative;
+}
+/* Radial gradients are already soft — no `filter: blur` needed (cheaper paint). */
+.carousel-stage::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1.5rem;
+  width: min(48rem, 96%);
+  height: 17rem;
+  transform: translateX(-50%);
+  background: var(--stage-floor);
+  pointer-events: none;
+  z-index: 0;
+}
+.carousel-stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 2.25rem;
+  width: 17rem;
+  height: 2.6rem;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    var(--stage-contact),
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* ─── Accessibility Modes ─────────────────────────────────────── */
 [data-high-contrast="true"],
 [data-high-contrast="true"] *,
@@ -304,6 +389,12 @@
 
 @keyframes chat-blink {
   0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+/* Hero lattice node breathing — opacity only (SVG-safe, no transform). */
+@keyframes ha-pulse {
+  0%, 100% { opacity: 0.45; }
   50%       { opacity: 1; }
 }
 
